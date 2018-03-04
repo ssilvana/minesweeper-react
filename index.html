@@ -9,6 +9,25 @@
     <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <style>
+      .grid {
+        line-height: 0;
+        border-spacing: 0;
+        border: 15px black solid;
+        box-shadow: 10px 10px darkgrey;
+      }
+      .cell {
+        height: 24px;
+        width: 24px;
+        padding: 0;
+      }
+      .cell.covered {
+        background-image: url(covered.png)
+      }
+      .cell.empty {
+        background-image: url(empty.png)
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
@@ -18,10 +37,28 @@
       return <h1>Hello, {props.name}</h1>;
     }
 
+    class Cell extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          //isCovered: true,
+          isCovered: (Math.random()>0.5),
+          content: null
+        };
+      }
+
+      render() {
+        let className = 'cell' + (this.state.isCovered? ' covered': ' empty');
+        return (
+          <td className={className}></td>
+        );
+      }
+    }
+
     function Row(props) {
       var cols = [];
       for (var i = 0; i < props.cols; i++) {
-        cols.push(<td key={i}>o</td>);
+        cols.push(<Cell key={i} />);
       }
       return <tr>{cols}</tr>;
     }
@@ -31,7 +68,7 @@
       for (var i = 0; i < props.rows; i++) {
         rows.push(<Row cols={props.cols} key={i} />);
       }
-      return <table><tbody>{rows}</tbody></table>;
+      return <table class="grid"><tbody>{rows}</tbody></table>;
     }
 
     function App() {
